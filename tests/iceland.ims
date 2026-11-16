@@ -1,0 +1,1 @@
+(draw (? (or (< (disty 0) 20) (< (distx -60) 20)) 0xFF0000 (? (or (< (disty 0) 40) (< (distx -60) 40)) 0xFFFFFF 0x0000FF)))

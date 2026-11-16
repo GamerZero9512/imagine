@@ -1,0 +1,15 @@
+{
+  "name": "imagine",
+  "description": "A programming language built to generate images",
+  "source": null,
+  "compak-min": 1,
+  "deps": [],
+  "exclude": [".git", ".gitignore", "tests", "imc", "imi", "*.imb", "imagine.tar.xz"],
+  "build": [["make"]],
+  "install": {
+    "bin": ["imc", "imi"],
+    "lib": [],
+    "include": [],
+    "man": {}
+  }
+}

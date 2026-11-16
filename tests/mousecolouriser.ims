@@ -1,0 +1,1 @@
+(draw (? (< (dist mousex mousey) 20) (rand 0 0xFFFFFF) (rand 0 255)))

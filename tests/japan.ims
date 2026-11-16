@@ -1,0 +1,1 @@
+(draw (? (< (dist 0 0) 100) 0xFF0000 0xFFFFFF))

@@ -1,0 +1,1 @@
+(draw (? (< (dist mousex mousey) 20) (* 255 (% (+ x y) 2)) 0))
