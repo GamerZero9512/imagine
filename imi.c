@@ -382,7 +382,7 @@ int vm_run(struct byteinstr *code, size_t count, struct usedvars *usedvars, doub
         if(tmp1) PUSH = (struct value){ tmp2, 0, 0 };
         else     PUSH = (struct value){ tmp3, 0, 0 };
         break;
-      case I_DEFAULT: // (default default optional)
+      case I_DEFAULT:
         if(*sp >= 2) {
           (*sp)--;
           tmp1 = POP.num;
@@ -444,7 +444,7 @@ int vm_run(struct byteinstr *code, size_t count, struct usedvars *usedvars, doub
         tmp3 = POP.num;
         tmp2 = POP.num;
         tmp1 = POP.num;
-        PUSH = (struct value){ tmp2 + ((tmp3 - tmp2) * (tmp1 / 100)), 0, 0 };
+        PUSH = (struct value){ tmp2 + ((tmp3 - tmp2) * tmp1), 0, 0 };
         break;
       case I_GETR:
         UNARY(((int)tmp1 >> 16) & 0xFF);
@@ -472,7 +472,7 @@ int vm_run(struct byteinstr *code, size_t count, struct usedvars *usedvars, doub
         tmp2 = POP.num;
         tmp1 = POP.num;
 
-        PUSH = (struct value){((tmp1 - tmp2) / (tmp3 - tmp2)) * 100, 0, 0};
+        PUSH = (struct value){((tmp1 - tmp2) / (tmp3 - tmp2)), 0, 0};
         break;
       default:
         continue;
@@ -616,7 +616,7 @@ int main(int argc, char **argv) {
     // Scroll wheel zoom
     zoom += GetMouseWheelMove() * 0.1;
 
-    if(zoom <= 0) zoom = 0;
+    if(zoom <= 0.01) zoom = 0.01;
 
     if(IsMouseButtonDown(MOUSE_BUTTON_LEFT)) {
       if(!dragging) {
