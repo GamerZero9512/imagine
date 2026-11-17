@@ -484,7 +484,7 @@ int vm_run(struct byteinstr *code, size_t count, struct usedvars *usedvars, doub
 /* ==================== MAIN ==================== */
 
 int main(int argc, char **argv) {
-  int i, j, stats = 0, cap = 0;
+  int i, j, stats = 0, cap = 0, dragging = 0;
   char *arg, *input = NULL, *tmp;
   FILE *in = stdin;
   size_t vcnt, scnt, icnt, frame = 0, sp = 0;
@@ -494,6 +494,7 @@ int main(int argc, char **argv) {
   struct framebuf fb = {0};
   struct usedvars usedvars = {0};
   double zoom = 1;
+  Vector2 cameraOffset = { 0, 0 }, lastMouse = { 0, 0 };
 
   for(i = 1; i < argc; i++) {
     arg = argv[i];
@@ -615,12 +616,24 @@ int main(int argc, char **argv) {
     // Scroll wheel zoom
     zoom += GetMouseWheelMove() * 0.1;
 
-    // TODO: Click and drag
+    if(zoom <= 0) zoom = 0;
+
+    if(IsMouseButtonDown(MOUSE_BUTTON_LEFT)) {
+      if(!dragging) {
+        dragging = true;
+        lastMouse = mouse;
+      }
+
+      cameraOffset.x += mouse.x - lastMouse.x;
+      cameraOffset.y += mouse.y - lastMouse.y;
+
+      lastMouse = mouse;
+    } else dragging = false;
 
     for(y = 0; y < height; y++) for(x = 0; x < width; x++) {
       sp = 0;
-      hex = vm_run(program, icnt, &usedvars, vars, stack, &sp, (double)(x - (width >> 1)) / zoom, (double)((height >> 1) - y) / zoom, (double)width,
-                   (double)height, (double)(mouse.x - (width >> 1)) / zoom, (double)((height >> 1) - mouse.y) / zoom, (double)frame);
+      hex = vm_run(program, icnt, &usedvars, vars, stack, &sp, (double)(x - (width >> 1) - cameraOffset.x) / zoom, (double)((height >> 1) - y + cameraOffset.y) / zoom, (double)width,
+                   (double)height, (double)(mouse.x - (width >> 1) - cameraOffset.x) / zoom, (double)((height >> 1) - mouse.y + cameraOffset.y) / zoom, (double)frame);
       if(hex >= 0) {
         hex &= 0xFFFFFF;
         colour = (Color){ .r = (hex >> 16) & 0xFF, .g = (hex >> 8) & 0xFF, .b = hex & 0xFF, .a = 255 };
