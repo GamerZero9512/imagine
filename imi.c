@@ -620,7 +620,7 @@ int main(int argc, char **argv) {
 
     if(IsMouseButtonDown(MOUSE_BUTTON_LEFT)) {
       if(!dragging) {
-        dragging = true;
+        dragging = 1;
         lastMouse = mouse;
       }
 
@@ -628,7 +628,7 @@ int main(int argc, char **argv) {
       cameraOffset.y += mouse.y - lastMouse.y;
 
       lastMouse = mouse;
-    } else dragging = false;
+    } else dragging = 0;
 
     for(y = 0; y < height; y++) for(x = 0; x < width; x++) {
       sp = 0;

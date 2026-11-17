@@ -298,7 +298,7 @@ int main(int argc, char **argv) {
           }
           break;
         case 'H':
-          human = true;
+          human = 1;
           break;
         case 'f':
           operation = OP_FORMAT;
