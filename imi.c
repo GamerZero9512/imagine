@@ -281,7 +281,7 @@ int vm_run(struct byteinstr *code, size_t count, struct usedvars *usedvars, doub
         BINOP(tmp1 * tmp2);
         break;
       case I_DIV:
-        BINOP(tmp1 * tmp2);
+        BINOP(tmp1 / tmp2);
         break;
       case I_POW:
         BINOP(pow(tmp1, tmp2));
@@ -636,8 +636,7 @@ int main(int argc, char **argv) {
                    (double)height, (double)(mouse.x - (width >> 1) - cameraOffset.x) / zoom, (double)((height >> 1) - mouse.y + cameraOffset.y) / zoom, (double)frame);
       if(hex >= 0) {
         hex &= 0xFFFFFF;
-        colour = (Color){ .r = (hex >> 16) & 0xFF, .g = (hex >> 8) & 0xFF, .b = hex & 0xFF, .a = 255 };
-        framebuf_set_pixel(&fb, x, y, colour);
+        fb.pixels[(size_t)y * width + x] = (Color){(hex >> 16) & 0xFF, (hex >> 8) & 0xFF, hex & 0xFF, 255 };
       } else if(hex == -2) {
         framebuf_destroy(&fb);
         CloseWindow();
