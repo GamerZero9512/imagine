@@ -484,7 +484,7 @@ int vm_run(struct byteinstr *code, size_t count, struct usedvars *usedvars, doub
 /* ==================== MAIN ==================== */
 
 int main(int argc, char **argv) {
-  int i, j, stats = 0, cap = 0, has_zoom = 0;
+  int i, j, stats = 0, cap = 0;
   char *arg, *input = NULL, *tmp;
   FILE *in = stdin;
   size_t vcnt, scnt, icnt, frame = 0, sp = 0;
@@ -494,8 +494,6 @@ int main(int argc, char **argv) {
   struct framebuf fb = {0};
   struct usedvars usedvars = {0};
   double zoom = 1;
-  Rectangle zoomIn = { 700, 20, 40, 40 }, zoomOut = { 650, 20, 40, 40 };
-
 
   for(i = 1; i < argc; i++) {
     arg = argv[i];
@@ -519,7 +517,6 @@ int main(int argc, char **argv) {
                  "  -h            show this help message\n"
                  "  -s            show performance metrics\n"
                  "  -c            cap FPS at 60\n"
-                 "  -z            enable zoom\n"
           , argv[0]);
           return 0;
         case 's':
@@ -527,9 +524,6 @@ int main(int argc, char **argv) {
           break;
         case 'c':
           cap = 1;
-          break;
-        case 'z':
-          has_zoom = 1;
           break;
         default:
           fprintf(stderr, "unrecognised flag: '%c'\n"
@@ -615,18 +609,13 @@ int main(int argc, char **argv) {
 
     mouse = GetMousePosition();
 
-    if(has_zoom) {
-      // Keyboard zoom
-      if(IsKeyPressed(KEY_EQUAL)) zoom += 0.1;
-      if(IsKeyPressed(KEY_MINUS)) zoom -= 0.1;
-      // Scroll wheel zoom
-      zoom += GetMouseWheelMove() * 0.1;
-      // GUI Button zoom
-      if(IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
-        if(CheckCollisionPointRec(mouse, zoomIn))  zoom += 0.1;
-        if(CheckCollisionPointRec(mouse, zoomOut)) zoom -= 0.1;
-      }
-    }
+    // Keyboard zoom
+    if(IsKeyPressed(KEY_EQUAL)) zoom += 0.1;
+    if(IsKeyPressed(KEY_MINUS)) zoom -= 0.1;
+    // Scroll wheel zoom
+    zoom += GetMouseWheelMove() * 0.1;
+
+    // TODO: Click and drag
 
     for(y = 0; y < height; y++) for(x = 0; x < width; x++) {
       sp = 0;
@@ -656,12 +645,6 @@ int main(int argc, char **argv) {
       DrawText(TextFormat("FPS %d", fps), 10, 10, 20, GREEN);
       DrawText(TextFormat("MS %d", (int)(GetFrameTime() * 1000)), 120, 10, 20, GREEN);
       DrawText(TextFormat("KIPS %d", (fps * width * height * icnt) / 1000), 230, 10, 20, GREEN);
-    }
-    if(has_zoom) {
-      DrawRectangleRounded(zoomIn, 0.2f, 8, WHITE);
-      DrawRectangleRounded(zoomOut, 0.2f, 8, BLACK);
-      DrawText("+", 713, 25, 30, BLACK);
-      DrawText("-", 663, 25, 30, BLACK);
     }
     EndDrawing();
 
